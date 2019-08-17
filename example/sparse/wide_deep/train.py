@@ -38,7 +38,9 @@ parser.add_argument('--optimizer', type=str, default='adam',
                     choices=["ftrl", "sgd", "adam"])
 parser.add_argument('--log-interval', type=int, default=100,
                     help='number of batches to wait before logging training status')
-
+parser.add_argument('--gpus', type=str, default='0',
+                    help='list of gpus to use')
+opt = parser.parse_args()
 
 # Related to feature engineering, please see preprocess in data.py
 ADULT = {
@@ -66,7 +68,7 @@ if __name__ == '__main__':
     optimizer = args.optimizer
     log_interval = args.log_interval
     lr = args.lr
-    ctx = mx.gpu(0) if args.cuda else mx.cpu()
+    ctx = [mx.gpu(int(i)) for i in opt.gpus.split(',')] if args.cuda else mx.cpu()
 
     # dataset    
     data_dir = os.path.join(os.getcwd(), 'data')
